@@ -1,0 +1,95 @@
+{
+  "vehicles": [
+    {
+      "yearRange": "2020~2026",
+      "makes": {
+        "ACURA": ["ILX 4 DR", "MDX 4 DR SUV", "RDX 4 DR SUV", "TLX 4 DR"],
+        "BMW": ["3 SERIES 4 DR", "5 SERIES 4 DR", "X3 4 DR SUV", "X5 4 DR SUV"],
+        "CHEVROLET": ["CAMARO 2 DR", "COLORADO 4 DR TRUCK", "EQUINOX 4 DR SUV", "MALIBU 4 DR", "SILVERADO 4 DR TRUCK", "SUBURBAN 4 DR SUV", "TAHOE 4 DR SUV", "TRAVERSE 4 DR SUV"],
+        "DODGE": ["CHALLENGER 2 DR", "CHARGER 4 DR", "DURANGO 4 DR SUV"],
+        "FORD": ["BRONCO 4 DR SUV", "ESCAPE 4 DR SUV", "EXPLORER 4 DR SUV", "F-150 4 DR TRUCK", "MUSTANG 2 DR", "RANGER 4 DR TRUCK"],
+        "GMC": ["SIERRA 4 DR TRUCK", "TERRAIN 4 DR SUV", "YUKON 4 DR SUV"],
+        "HONDA": ["ACCORD 4 DR", "CIVIC 4 DR", "CR-V 4 DR SUV", "HR-V 4 DR SUV", "ODYSSEY MINIVAN", "PILOT 4 DR SUV"],
+        "HYUNDAI": ["ELANTRA 4 DR", "KONA 4 DR SUV", "PALISADE 4 DR SUV", "SANTA FE 4 DR SUV", "SONATA 4 DR", "TUCSON 4 DR SUV"],
+        "JEEP": ["CHEROKEE 4 DR SUV", "GRAND CHEROKEE 4 DR SUV", "WRANGLER 4 DR SUV"],
+        "KIA": ["FORTE 4 DR", "K5 4 DR", "SELTOS 4 DR SUV", "SORENTO 4 DR SUV", "SPORTAGE 4 DR SUV", "TELLURIDE 4 DR SUV"],
+        "LEXUS": ["ES 4 DR", "IS 4 DR", "NX 4 DR SUV", "RX 4 DR SUV"],
+        "MAZDA": ["CX-5 4 DR SUV", "CX-50 4 DR SUV", "MAZDA3 4 DR"],
+        "MERCEDES-BENZ": ["C-CLASS 4 DR", "E-CLASS 4 DR", "GLC 4 DR SUV", "GLE 4 DR SUV"],
+        "NISSAN": ["ALTIMA 4 DR", "FRONTIER 4 DR TRUCK", "PATHFINDER 4 DR SUV", "ROGUE 4 DR SUV", "SENTRA 4 DR"],
+        "RAM": ["1500 4 DR TRUCK"],
+        "SUBARU": ["CROSSTREK 4 DR SUV", "FORESTER 4 DR SUV", "OUTBACK 4 DR"],
+        "TESLA": ["CYBERTRUCK", "MODEL 3 4 DR", "MODEL S 4 DR", "MODEL X 4 DR SUV", "MODEL Y 4 DR SUV"],
+        "TOYOTA": ["4RUNNER 4 DR SUV", "CAMRY 4 DR", "COROLLA 4 DR", "HIGHLANDER 4 DR SUV", "RAV4 4 DR SUV", "TACOMA 4 DR TRUCK", "TUNDRA 4 DR TRUCK"],
+        "VOLKSWAGEN": ["ATLAS 4 DR SUV", "JETTA 4 DR", "TIGUAN 4 DR SUV"]
+      }
+    },
+    {
+      "yearRange": "2015~2019",
+      "makes": {
+        "CHEVROLET": ["CAMARO 2 DR", "COLORADO 4 DR TRUCK", "EQUINOX 4 DR SUV", "MALIBU 4 DR", "SILVERADO 4 DR TRUCK", "SUBURBAN 4 DR SUV", "TAHOE 4 DR SUV"],
+        "DODGE": ["CHALLENGER 2 DR", "CHARGER 4 DR", "DURANGO 4 DR SUV"],
+        "FORD": ["ESCAPE 4 DR SUV", "EXPLORER 4 DR SUV", "F-150 4 DR TRUCK", "MUSTANG 2 DR"],
+        "HONDA": ["ACCORD 4 DR", "CIVIC 4 DR", "CR-V 4 DR SUV", "ODYSSEY MINIVAN", "PILOT 4 DR SUV"],
+        "HYUNDAI": ["ELANTRA 4 DR", "SANTA FE 4 DR SUV", "SONATA 4 DR", "TUCSON 4 DR SUV"],
+        "KIA": ["FORTE 4 DR", "OPTIMA 4 DR", "SORENTO 4 DR SUV", "SPORTAGE 4 DR SUV"],
+        "NISSAN": ["ALTIMA 4 DR", "PATHFINDER 4 DR SUV", "ROGUE 4 DR SUV", "SENTRA 4 DR"],
+        "TESLA": ["MODEL 3 4 DR", "MODEL S 4 DR", "MODEL X 4 DR SUV"],
+        "TOYOTA": ["4RUNNER 4 DR SUV", "CAMRY 4 DR", "COROLLA 4 DR", "HIGHLANDER 4 DR SUV", "RAV4 4 DR SUV", "TACOMA 4 DR TRUCK", "TUNDRA 4 DR TRUCK"]
+      }
+    }
+  ],
+  "pricing": {
+    "2_dr": {
+      "rayno-monocarbon": 199,
+      "rayno-phantom-s5": 279,
+      "llumar-ctx": 359,
+      "llumar-irx": 449
+    },
+    "4_dr": {
+      "rayno-monocarbon": 250,
+      "rayno-phantom-s5": 330,
+      "llumar-ctx": 440,
+      "llumar-irx": 535
+    },
+    "4_dr_suv": {
+      "rayno-monocarbon": 280,
+      "rayno-phantom-s5": 370,
+      "llumar-ctx": 480,
+      "llumar-irx": 585
+    },
+    "4_dr_truck": {
+      "rayno-monocarbon": 250,
+      "rayno-phantom-s5": 330,
+      "llumar-ctx": 440,
+      "llumar-irx": 535
+    },
+    "minivan": {
+      "rayno-monocarbon": 299,
+      "rayno-phantom-s5": 389,
+      "llumar-ctx": 499,
+      "llumar-irx": 599
+    },
+    "cybertruck": {
+      "rayno-monocarbon": 350,
+      "rayno-phantom-s5": 450,
+      "llumar-ctx": 550,
+      "llumar-irx": 650
+    }
+  },
+  "addons": [
+    { "id": "windshield", "name": "Llumar Autofit® Windshield Heat Blocker", "price": 250 },
+    { "id": "sunroof", "name": "Add Sunroof Tint", "price": 75 },
+    { "id": "sunstrip", "name": "Add Sunstrip (Visor)", "price": 50 },
+    { "id": "removal", "name": "Remove Existing Tint", "price": 75 }
+  ],
+  "serviceOptions": [
+    { "id": "all_sides", "label": "All side windows and back glass" },
+    { "id": "fronts_only", "label": "Two front door windows only" },
+    { "id": "windshield", "label": "Add front windshield heat blocker" },
+    { "id": "sunroof", "label": "Add sunroof" },
+    { "id": "sunstrip", "label": "Add sunstrip (visor)" },
+    { "id": "removal", "label": "Removal existing tint" },
+    { "id": "other", "label": "Other" }
+  ]
+}

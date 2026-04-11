@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  // Vehicle
+  year            String
+  make            String
+  model           String
+  // Selected package
+  packageId       String
+  packageName     String
+  price           Float
+  // Services selected
+  services        String   // JSON array: ["all_sides","windshield","sunroof"]
+  addons          String?  // JSON array of add-on IDs
+  totalPrice      Float
+  // Appointment
+  appointmentType String   // "pick_a_time" | "drop_and_go"
+  appointmentDate String
+  appointmentTime String
+  googleEventId   String?
+  // Customer
+  customerName    String
+  customerPhone   String
+  customerEmail   String
+  notes           String?
+  status          String   @default("pending")
+  // SMS confirmation
+  smsConfirmed    Boolean  @default(false)
+  smsConfirmedAt  DateTime?
+}
+
+model ContactSubmission {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  name      String
+  email     String
+  phone     String?
+  message   String
+}
+
+model Quote {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  year          String
+  make          String
+  model         String
+  customerEmail String?
+  customerPhone String?
+  customerName  String?
+  viewed        Boolean  @default(false)
+}
