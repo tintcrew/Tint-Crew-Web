@@ -1,0 +1,65 @@
+export const SITE_CONFIG = {
+  name: "Tint Crew",
+  tagline: "Professional Window Tint Services in Orange County",
+  description:
+    "Tint Crew has been providing premium window tinting services in Buena Park & Orange County since 1985. Authorized Llumar, Vista & Rayno dealer. Get your free quote today!",
+  url: "https://www.tintcrew.com",
+  phone: "(714) 521-5633",
+  phoneRaw: "+17145215633",
+  email: "tintcrew@gmail.com",
+  address: {
+    street: "6905 Oslo Circle, Ste i",
+    city: "Buena Park",
+    state: "CA",
+    zip: "90621",
+    full: "6905 Oslo Circle, Ste i, Buena Park, CA 90621",
+  },
+  hours: {
+    weekdays: "9:00 AM – 5:00 PM",
+    saturday: "9:00 AM – 5:00 PM",
+    sunday: "Closed",
+  },
+  since: 1985,
+  social: {
+    yelp: "https://www.yelp.com/biz/tint-crew-buena-park",
+    facebook: "https://www.facebook.com/tintcrew1/",
+    instagram: "",
+    google: "",
+  },
+  brands: ["Llumar", "Vista", "Rayno"] as const,
+  areaServed: [
+    "Buena Park",
+    "Fullerton",
+    "Anaheim",
+    "La Palma",
+    "Cerritos",
+    "Cypress",
+    "Stanton",
+    "Garden Grove",
+    "La Mirada",
+    "Orange County",
+  ],
+  yelpReviews: 1095,
+  yelpPhotos: 716,
+} as const;
+
+export const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  {
+    label: "Services",
+    href: "/services/automotive-tinting",
+    children: [
+      { label: "Automotive Tinting", href: "/services/automotive-tinting" },
+      { label: "Paint Protection Film", href: "/services/paint-protection" },
+      { label: "Residential Tinting", href: "/services/residential-tinting" },
+      { label: "Commercial Tinting", href: "/services/commercial-tinting" },
+      { label: "Tesla Tinting", href: "/services/tesla-tinting" },
+    ],
+  },
+  { label: "Visualizer", href: "/visualizer/auto" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "About", href: "/about" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
+] as const;
