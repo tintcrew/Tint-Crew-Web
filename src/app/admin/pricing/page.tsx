@@ -1,19 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import pricingData from "@/data/pricing.json";
 import { formatCurrency } from "@/lib/utils";
-
-type CategoryKey = keyof typeof pricingData.pricing;
-
-const CATEGORIES: { key: CategoryKey; label: string }[] = [
-  { key: "2_dr", label: "2-Door (Coupe)" },
-  { key: "4_dr", label: "4-Door (Sedan)" },
-  { key: "4_dr_suv", label: "4-Door SUV" },
-  { key: "4_dr_truck", label: "4-Door Truck" },
-  { key: "minivan", label: "Minivan" },
-  { key: "cybertruck", label: "Cybertruck" },
-];
 
 const PACKAGES = [
   { id: "rayno-monocarbon", label: "MonoCarbon" },
@@ -22,33 +11,55 @@ const PACKAGES = [
   { id: "llumar-irx", label: "Llumar IRX" },
 ];
 
-export default function AdminPricingPage() {
-  const [activeCategory, setActiveCategory] = useState<CategoryKey>("4_dr");
+type FilmId =
+  | "rayno-monocarbon"
+  | "rayno-phantom-s5"
+  | "llumar-ctx"
+  | "llumar-irx";
 
-  const pricing = pricingData.pricing[activeCategory] as Record<string, number>;
+export default function AdminPricingPage() {
+  const makes = useMemo(
+    () =>
+      Array.from(new Set(pricingData.vehicles.map((v) => v.make))).sort(),
+    []
+  );
+
+  const [activeMake, setActiveMake] = useState<string>(makes[0] ?? "");
+
+  const vehiclesForMake = useMemo(
+    () =>
+      pricingData.vehicles
+        .filter((v) => v.make === activeMake)
+        .sort((a, b) => {
+          if (a.model !== b.model) return a.model.localeCompare(b.model);
+          return a.yearRange.localeCompare(b.yearRange);
+        }),
+    [activeMake]
+  );
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Pricing Editor</h1>
         <p className="text-sm text-foreground-secondary mt-1">
-          View and manage pricing by vehicle category. Edit coming soon — currently read-only from pricing.json.
+          View and manage pricing by vehicle make. Edit coming soon — currently
+          read-only from pricing.json.
         </p>
       </div>
 
-      {/* Category Tabs */}
+      {/* Make Tabs */}
       <div className="flex flex-wrap gap-2">
-        {CATEGORIES.map((cat) => (
+        {makes.map((m) => (
           <button
-            key={cat.key}
-            onClick={() => setActiveCategory(cat.key)}
+            key={m}
+            onClick={() => setActiveMake(m)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-              activeCategory === cat.key
+              activeMake === m
                 ? "border-accent bg-accent text-accent-foreground"
                 : "border-border hover:border-border-hover"
             }`}
           >
-            {cat.label}
+            {m}
           </button>
         ))}
       </div>
@@ -59,19 +70,44 @@ export default function AdminPricingPage() {
           <thead>
             <tr className="border-b border-border bg-surface">
               <th className="text-left text-xs font-bold uppercase tracking-wider text-foreground-muted px-4 py-3">
-                Film Package
+                Model
               </th>
+              <th className="text-left text-xs font-bold uppercase tracking-wider text-foreground-muted px-4 py-3">
+                Years
+              </th>
+              {PACKAGES.map((pkg) => (
+                <th
+                  key={pkg.id}
+                  className="text-right text-xs font-bold uppercase tracking-wider text-foreground-muted px-4 py-3"
+                >
+                  {pkg.label}
+                </th>
+              ))}
               <th className="text-right text-xs font-bold uppercase tracking-wider text-foreground-muted px-4 py-3">
-                Price
+                Windshield
               </th>
             </tr>
           </thead>
           <tbody>
-            {PACKAGES.map((pkg) => (
-              <tr key={pkg.id} className="border-b border-border last:border-0">
-                <td className="px-4 py-3 text-sm font-medium">{pkg.label}</td>
+            {vehiclesForMake.map((v) => (
+              <tr
+                key={`${v.model}-${v.yearRange}`}
+                className="border-b border-border last:border-0"
+              >
+                <td className="px-4 py-3 text-sm font-medium">{v.model}</td>
+                <td className="px-4 py-3 text-sm text-foreground-secondary">
+                  {v.yearRange}
+                </td>
+                {PACKAGES.map((pkg) => (
+                  <td
+                    key={pkg.id}
+                    className="px-4 py-3 text-sm font-bold text-accent text-right"
+                  >
+                    {formatCurrency(v.allSides[pkg.id as FilmId])}
+                  </td>
+                ))}
                 <td className="px-4 py-3 text-sm font-bold text-accent text-right">
-                  {formatCurrency(pricing[pkg.id])}
+                  {formatCurrency(v.windshield)}
                 </td>
               </tr>
             ))}
@@ -96,10 +132,17 @@ export default function AdminPricingPage() {
             </thead>
             <tbody>
               {pricingData.addons.map((addon) => (
-                <tr key={addon.id} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3 text-sm font-medium">{addon.name}</td>
+                <tr
+                  key={addon.id}
+                  className="border-b border-border last:border-0"
+                >
+                  <td className="px-4 py-3 text-sm font-medium">
+                    {addon.name}
+                  </td>
                   <td className="px-4 py-3 text-sm font-bold text-accent text-right">
-                    {formatCurrency(addon.price)}
+                    {"price" in addon
+                      ? formatCurrency(addon.price as number)
+                      : "From vehicle data"}
                   </td>
                 </tr>
               ))}
@@ -112,21 +155,13 @@ export default function AdminPricingPage() {
       <div className="p-4 rounded-xl border border-border bg-surface text-sm text-foreground-secondary">
         Total vehicles in database:{" "}
         <span className="font-bold text-foreground">
-          {pricingData.vehicles.reduce(
-            (sum, v) =>
-              sum +
-              Object.values(v.makes).reduce(
-                (s, models) => s + (models as string[]).length,
-                0
-              ),
-            0
-          )}
-        </span>{" "}
-        models across{" "}
-        <span className="font-bold text-foreground">
           {pricingData.vehicles.length}
         </span>{" "}
-        year ranges
+        entries across{" "}
+        <span className="font-bold text-foreground">
+          {new Set(pricingData.vehicles.map((v) => v.make)).size}
+        </span>{" "}
+        makes
       </div>
     </div>
   );

@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { ArrowLeft, CheckCircle, Star } from "lucide-react";
-import { getPackagePrices, getAddons, getServiceOptions } from "@/lib/pricing";
+import {
+  getPackagePrices,
+  getAddons,
+  getServiceOptions,
+  getWindshieldPrice,
+} from "@/lib/pricing";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import type { VehicleSelection, PackageSelection } from "./QuoteWizard";
@@ -19,13 +24,36 @@ interface Step2PricingProps {
 }
 
 export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
-  const packages = getPackagePrices(vehicle.model);
+  const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
+  const [selectedServices, setSelectedServices] = useState<string[]>([
+    "all_sides",
+  ]);
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+
+  // Determine the service type for pricing based on selected services
+  const serviceType: "all_sides" | "fronts_only" = selectedServices.includes(
+    "all_sides"
+  )
+    ? "all_sides"
+    : selectedServices.includes("fronts_only")
+      ? "fronts_only"
+      : "all_sides";
+
+  const packages = getPackagePrices(
+    vehicle.yearRange,
+    vehicle.make,
+    vehicle.model,
+    serviceType
+  );
   const addons = getAddons();
   const serviceOptions = getServiceOptions();
 
-  const [selectedPkg, setSelectedPkg] = useState<string | null>(null);
-  const [selectedServices, setSelectedServices] = useState<string[]>(["all_sides"]);
-  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+  // Get vehicle-specific windshield price
+  const windshieldPrice = getWindshieldPrice(
+    vehicle.yearRange,
+    vehicle.make,
+    vehicle.model
+  );
 
   const pkg = packages.find((p) => p.id === selectedPkg);
 
@@ -33,7 +61,10 @@ export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
   const basePrice = pkg?.price ?? 0;
   const addonTotal = selectedAddons.reduce((sum, aid) => {
     const addon = addons.find((a) => a.id === aid);
-    return sum + (addon?.price ?? 0);
+    if (addon?.id === "windshield") {
+      return sum + windshieldPrice;
+    }
+    return sum + (addon && "price" in addon ? (addon.price as number) : 0);
   }, 0);
   const totalPrice = basePrice + addonTotal;
 
@@ -57,6 +88,11 @@ export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
       selectedAddons,
       totalPrice
     );
+  }
+
+  function getAddonPrice(addon: (typeof addons)[number]): number {
+    if (addon.id === "windshield") return windshieldPrice;
+    return "price" in addon ? (addon.price as number) : 0;
   }
 
   return (
@@ -181,7 +217,7 @@ export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
                 <span className="text-sm">{addon.name}</span>
               </div>
               <span className="text-sm font-semibold text-accent">
-                +{formatCurrency(addon.price)}
+                +{formatCurrency(getAddonPrice(addon))}
               </span>
             </label>
           ))}
@@ -194,7 +230,7 @@ export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
           <div>
             <div className="text-sm text-foreground-muted">Estimated Total</div>
             <div className="text-3xl font-black text-accent">
-              {selectedPkg ? formatCurrency(totalPrice) : "—"}
+              {selectedPkg ? formatCurrency(totalPrice) : "\u2014"}
             </div>
           </div>
           <button
