@@ -40,7 +40,7 @@ export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
       : "all_sides";
 
   const packages = getPackagePrices(
-    vehicle.yearRange,
+    vehicle.year,
     vehicle.make,
     vehicle.model,
     serviceType
@@ -50,7 +50,7 @@ export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
 
   // Get vehicle-specific windshield price
   const windshieldPrice = getWindshieldPrice(
-    vehicle.yearRange,
+    vehicle.year,
     vehicle.make,
     vehicle.model
   );
@@ -107,7 +107,7 @@ export function Step2Pricing({ vehicle, onSelect, onBack }: Step2PricingProps) {
         </button>
         <h2 className="text-2xl font-bold">Personalized Estimate</h2>
         <p className="text-sm text-foreground-secondary mt-1">
-          Vehicle: {vehicle.yearRange} {vehicle.make} {vehicle.model}
+          Vehicle: {vehicle.year} {vehicle.make} {vehicle.model}
         </p>
       </div>
 

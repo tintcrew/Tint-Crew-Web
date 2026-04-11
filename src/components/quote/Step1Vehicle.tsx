@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Car } from "lucide-react";
-import { getYearRanges, getMakes, getModels } from "@/lib/pricing";
+import { getYears, getMakes, getModels } from "@/lib/pricing";
 import type { VehicleSelection } from "./QuoteWizard";
 
 interface Step1VehicleProps {
@@ -10,16 +10,16 @@ interface Step1VehicleProps {
 }
 
 export function Step1Vehicle({ onSelect }: Step1VehicleProps) {
-  const [yearRange, setYearRange] = useState("");
+  const [year, setYear] = useState<number | "">("");
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
 
-  const yearRanges = getYearRanges();
-  const makes = yearRange ? getMakes(yearRange) : [];
-  const models = yearRange && make ? getModels(yearRange, make) : [];
+  const years = getYears();
+  const makes = year ? getMakes(year) : [];
+  const models = year && make ? getModels(year, make) : [];
 
   function handleYearChange(value: string) {
-    setYearRange(value);
+    setYear(value ? Number(value) : "");
     setMake("");
     setModel("");
   }
@@ -30,8 +30,8 @@ export function Step1Vehicle({ onSelect }: Step1VehicleProps) {
   }
 
   function handleSubmit() {
-    if (yearRange && make && model) {
-      onSelect({ yearRange, make, model });
+    if (year && make && model) {
+      onSelect({ year, make, model });
     }
   }
 
@@ -52,12 +52,12 @@ export function Step1Vehicle({ onSelect }: Step1VehicleProps) {
         <div>
           <label className="block text-sm font-medium mb-1.5">Year *</label>
           <select
-            value={yearRange}
+            value={year}
             onChange={(e) => handleYearChange(e.target.value)}
             className="w-full h-11 rounded-lg border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-accent appearance-none"
           >
             <option value="">Select Year</option>
-            {yearRanges.map((yr) => (
+            {years.map((yr) => (
               <option key={yr} value={yr}>
                 {yr}
               </option>
@@ -71,7 +71,7 @@ export function Step1Vehicle({ onSelect }: Step1VehicleProps) {
           <select
             value={make}
             onChange={(e) => handleMakeChange(e.target.value)}
-            disabled={!yearRange}
+            disabled={!year}
             className="w-full h-11 rounded-lg border border-border bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 appearance-none"
           >
             <option value="">Select Make</option>
@@ -105,7 +105,7 @@ export function Step1Vehicle({ onSelect }: Step1VehicleProps) {
       <div className="text-center">
         <button
           onClick={handleSubmit}
-          disabled={!yearRange || !make || !model}
+          disabled={!year || !make || !model}
           className="h-12 px-8 rounded-lg bg-accent text-accent-foreground font-semibold text-base hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Get My Quote

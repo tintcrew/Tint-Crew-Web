@@ -7,7 +7,7 @@ import { Step2Pricing } from "./Step2Pricing";
 import { Step3Booking } from "./Step3Booking";
 
 export interface VehicleSelection {
-  yearRange: string;
+  year: number;
   make: string;
   model: string;
 }

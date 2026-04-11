@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getYearRanges } from "@/lib/pricing";
+import { getYears } from "@/lib/pricing";
 
 export async function GET() {
-  return NextResponse.json(getYearRanges());
+  return NextResponse.json(getYears());
 }

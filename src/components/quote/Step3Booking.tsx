@@ -68,7 +68,7 @@ export function Step3Booking({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          year: vehicle.yearRange,
+          year: String(vehicle.year),
           make: vehicle.make,
           model: vehicle.model,
           packageId: selectedPackage.id,
@@ -108,7 +108,7 @@ export function Step3Booking({
           <div className="text-sm space-y-2">
             <div className="flex justify-between">
               <span className="text-foreground-muted">Vehicle</span>
-              <span className="font-medium">{vehicle.yearRange} {vehicle.make} {vehicle.model}</span>
+              <span className="font-medium">{vehicle.year} {vehicle.make} {vehicle.model}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-foreground-muted">Film</span>
@@ -145,7 +145,7 @@ export function Step3Booking({
         <h2 className="text-2xl font-bold">Book Your Appointment</h2>
         <div className="mt-2 p-3 rounded-lg bg-surface text-sm">
           <span className="text-foreground-muted">
-            {vehicle.yearRange} {vehicle.make} {vehicle.model}
+            {vehicle.year} {vehicle.make} {vehicle.model}
           </span>
           <span className="mx-2 text-border">|</span>
           <span className="font-semibold">{selectedPackage.name}</span>
