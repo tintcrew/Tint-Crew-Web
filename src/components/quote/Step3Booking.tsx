@@ -29,6 +29,7 @@ const APPOINTMENT_TYPES = [
 export function Step3Booking({
   vehicle,
   selectedPackage,
+  services,
   totalPrice,
   onBack,
 }: Step3BookingProps) {
@@ -62,7 +63,33 @@ export function Step3Booking({
   async function handleSubmit() {
     if (!selectedDate || !selectedTime || !name || !phone || !email) return;
 
-    // TODO: POST to /api/bookings
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          year: vehicle.yearRange,
+          make: vehicle.make,
+          model: vehicle.model,
+          packageId: selectedPackage.id,
+          packageName: selectedPackage.name,
+          price: selectedPackage.price,
+          services: services,
+          addons: [],
+          totalPrice,
+          appointmentType,
+          appointmentDate: selectedDate,
+          appointmentTime: selectedTime,
+          customerName: name,
+          customerPhone: phone,
+          customerEmail: email,
+          notes,
+        }),
+      });
+      if (!res.ok) throw new Error("Booking failed");
+    } catch (err) {
+      console.error("Booking error:", err);
+    }
     setSubmitted(true);
   }
 
