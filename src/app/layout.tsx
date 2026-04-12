@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { SmoothScroll } from "@/components/shared/SmoothScroll";
 import { AnimatedBackground } from "@/components/shared/AnimatedBackground";
 import { SITE_CONFIG } from "@/constants/site";
 import "./globals.css";
@@ -55,12 +56,14 @@ export default function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
-        <AnimatedBackground />
-        <div className="relative z-10">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <SmoothScroll>
+          <AnimatedBackground />
+          <div className="relative z-10">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </SmoothScroll>
       </body>
     </html>
   );
