@@ -19,9 +19,9 @@ interface LlumarViewerProps {
 }
 
 const VIEWER_URLS: Record<string, string> = {
-  "auto-tint": "https://llumar.com/na/en/automotive/window-filmppf-viewer/dealer-auto-tint-viewer/",
-  "auto-ppf": "https://llumar.com/na/en/automotive/window-filmppf-viewer/dealer-auto-ppf-viewer/",
-  "auto-tint-ppf": "https://llumar.com/na/en/automotive/window-filmppf-viewer/dealer-auto-tint-ppf-viewer/",
+  "auto-tint": "https://llumar.com/na/en/automotive/window-film-ppf-viewer/dealer-auto-tint-viewer/",
+  "auto-ppf": "https://llumar.com/na/en/automotive/window-film-ppf-viewer/dealer-auto-ppf-viewer/",
+  "auto-tint-ppf": "https://llumar.com/na/en/automotive/window-film-ppf-viewer/dealer-auto-tint-ppf-viewer/",
   "commercial-solar-decorative": "https://llumar.com/na/en/architectural/interactive-window-film-tools/solar-decorative-film-viewer/dealer-commercial-solar-and-decorative/",
   "commercial-solar": "https://llumar.com/na/en/architectural/interactive-window-film-tools/solar-decorative-film-viewer/dealer-commercial-solar/",
   "commercial-decorative": "https://llumar.com/na/en/architectural/interactive-window-film-tools/solar-decorative-film-viewer/dealer-commercial-decorative/",
