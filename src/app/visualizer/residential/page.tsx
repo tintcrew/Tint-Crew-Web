@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
-import { ResidentialVisualizer } from "@/components/visualizer/ResidentialVisualizer";
+import { LlumarTabs } from "@/components/shared/LlumarViewer";
 
 export const metadata: Metadata = {
   title: "Residential Film Visualizer — Preview Window Film for Your Home",
   description:
-    "Interactive home window film simulator. Preview solar control, Low-E, decorative, and safety films with before/after comparison and day/night toggle.",
+    "Preview solar control, decorative, and Low-E window films for your home with Llumar's interactive viewer. See the difference before you buy.",
 };
 
 export default function ResidentialVisualizerPage() {
   return (
     <div className="pt-20">
       <section className="py-16 sm:py-24">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
-            <div className="text-center mb-12">
+            <div className="text-center mb-10">
               <span className="text-sm font-medium text-accent uppercase tracking-widest">
                 Interactive Tool
               </span>
@@ -22,14 +22,21 @@ export default function ResidentialVisualizerPage() {
                 Home Film <span className="text-accent">Visualizer</span>
               </h1>
               <p className="mt-4 text-foreground-secondary max-w-2xl mx-auto">
-                Preview how different window films transform your home. Compare
-                before and after, toggle day and night views, and explore film types.
+                See how different window films can transform your home. Preview
+                solar control and decorative options in a real room setting.
               </p>
             </div>
           </AnimatedSection>
 
           <AnimatedSection>
-            <ResidentialVisualizer />
+            <LlumarTabs
+              tabs={[
+                { label: "Solar & Decorative", type: "residential-solar-decorative" },
+                { label: "Solar Control", type: "residential-solar" },
+                { label: "Decorative", type: "residential-decorative" },
+                { label: "Energy Calculator", type: "energy-calculator" },
+              ]}
+            />
           </AnimatedSection>
         </div>
       </section>
