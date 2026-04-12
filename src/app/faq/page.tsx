@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 
 export const metadata: Metadata = {
@@ -53,17 +54,31 @@ const FAQS = [
 export default function FaqPage() {
   return (
     <div className="pt-20">
+      {/* Hero Image */}
+      <section className="relative h-48 sm:h-64 w-full">
+        <Image
+          src="https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=1200&q=80"
+          alt="Window tinting service"
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white text-center px-4">
+            Frequently Asked <span className="text-accent">Questions</span>
+          </h1>
+        </div>
+      </section>
+
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <span className="text-sm font-medium text-accent uppercase tracking-wider">
               Help Center
             </span>
-            <h1 className="mt-4 text-4xl sm:text-5xl font-black tracking-tight">
-              Frequently Asked{" "}
-              <span className="text-accent">Questions</span>
-            </h1>
-            <p className="mt-6 text-foreground-secondary">
+            <p className="mt-4 text-foreground-secondary">
               Everything you need to know about window tinting at Tint Crew.
             </p>
           </AnimatedSection>
