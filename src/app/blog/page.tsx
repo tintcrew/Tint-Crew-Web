@@ -18,6 +18,7 @@ const BLOG_POSTS = [
       "Everything you need to know about California's window tinting regulations — what's legal, what's not, and how to avoid fines.",
     date: "2026-03-15",
     category: "Legal",
+    image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=600&q=80",
   },
   {
     slug: "how-window-tinting-improves-heat-reduction",
@@ -26,6 +27,7 @@ const BLOG_POSTS = [
       "Learn how different types of window film technology — dyed, carbon, and ceramic — block heat and keep your car cool in SoCal summers.",
     date: "2026-02-20",
     category: "Education",
+    image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&q=80",
   },
   {
     slug: "llumar-ctx-vs-irx-which-is-right-for-you",
@@ -34,6 +36,7 @@ const BLOG_POSTS = [
       "A detailed comparison of Llumar's two ceramic window films — performance, price, and which one makes sense for your vehicle.",
     date: "2026-01-10",
     category: "Products",
+    image: "https://images.unsplash.com/photo-1542362567-b07e54358753?w=600&q=80",
   },
 ];
 
@@ -59,27 +62,38 @@ export default function BlogPage() {
             {BLOG_POSTS.map((post, i) => (
               <AnimatedSection key={post.slug} delay={i * 0.1}>
                 <Link href={`/blog/${post.slug}`} className="group block">
-                  <article className="rounded-xl border border-border bg-card p-6 transition-all hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-xs font-medium text-accent bg-accent/10 px-2 py-1 rounded">
-                        {post.category}
-                      </span>
-                      <span className="text-xs text-foreground-muted">
-                        {new Date(post.date).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </span>
+                  <article className="rounded-xl border border-border bg-card overflow-hidden transition-all hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5">
+                    <div className="relative h-48 sm:h-56 w-full">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 896px) 100vw, 896px"
+                      />
                     </div>
-                    <h2 className="text-xl font-bold group-hover:text-accent transition-colors">
-                      {post.title}
-                    </h2>
-                    <p className="mt-2 text-sm text-foreground-secondary">
-                      {post.excerpt}
-                    </p>
-                    <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-accent group-hover:gap-2 transition-all">
-                      Read More <ArrowRight className="h-4 w-4" />
+                    <div className="p-6">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-xs font-medium text-accent bg-accent/10 px-2 py-1 rounded">
+                          {post.category}
+                        </span>
+                        <span className="text-xs text-foreground-muted">
+                          {new Date(post.date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      <h2 className="text-xl font-bold group-hover:text-accent transition-colors">
+                        {post.title}
+                      </h2>
+                      <p className="mt-2 text-sm text-foreground-secondary">
+                        {post.excerpt}
+                      </p>
+                      <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-accent group-hover:gap-2 transition-all">
+                        Read More <ArrowRight className="h-4 w-4" />
+                      </div>
                     </div>
                   </article>
                 </Link>
