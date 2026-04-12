@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import gsap from "gsap";
 import { ArrowRight, Sun, Thermometer, Shield, Eye } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const VLT_OPTIONS = [
-  { vlt: 5, label: "5%", desc: "Limo Dark", color: "rgba(0,0,0,0.95)" },
-  { vlt: 15, label: "15%", desc: "Dark", color: "rgba(0,0,0,0.85)" },
-  { vlt: 20, label: "20%", desc: "Medium Dark", color: "rgba(0,0,0,0.80)" },
-  { vlt: 35, label: "35%", desc: "Medium", color: "rgba(0,0,0,0.65)" },
-  { vlt: 50, label: "50%", desc: "Light", color: "rgba(0,0,0,0.50)" },
-  { vlt: 70, label: "70%", desc: "Very Light", color: "rgba(0,0,0,0.30)" },
+  { vlt: 5, label: "5%", desc: "Limo Dark" },
+  { vlt: 15, label: "15%", desc: "Dark" },
+  { vlt: 20, label: "20%", desc: "Medium Dark" },
+  { vlt: 35, label: "35%", desc: "Medium" },
+  { vlt: 50, label: "50%", desc: "Light" },
+  { vlt: 70, label: "70%", desc: "Very Light" },
 ];
 
 const FILM_DATA = [
@@ -23,23 +24,54 @@ const FILM_DATA = [
   { id: "irx", name: "Llumar IRX", heat: 62, ir: 97, uv: 99 },
 ];
 
-const ZONES = [
-  { id: "windshield", label: "Windshield" },
-  { id: "front", label: "Front Doors" },
-  { id: "rear", label: "Rear Doors" },
-  { id: "back", label: "Back Glass" },
-  { id: "sunroof", label: "Sunroof" },
+const VEHICLES = [
+  {
+    id: "sedan",
+    label: "Sedan",
+    image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=900&q=80",
+    // Window zones defined as percentage-based CSS positions over the photo
+    windows: [
+      { id: "windshield", label: "Windshield", top: "18%", left: "52%", width: "18%", height: "28%", borderRadius: "4px 30% 4px 4px" },
+      { id: "front", label: "Front Door", top: "20%", left: "32%", width: "18%", height: "24%", borderRadius: "4px" },
+      { id: "rear", label: "Rear Door", top: "20%", left: "14%", width: "16%", height: "22%", borderRadius: "4px" },
+      { id: "back", label: "Back Glass", top: "22%", left: "2%", width: "11%", height: "18%", borderRadius: "4px 4px 4px 20%" },
+    ],
+  },
+  {
+    id: "suv",
+    label: "SUV / Truck",
+    image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=900&q=80",
+    windows: [
+      { id: "windshield", label: "Windshield", top: "15%", left: "55%", width: "17%", height: "30%", borderRadius: "4px 25% 4px 4px" },
+      { id: "front", label: "Front Door", top: "18%", left: "36%", width: "17%", height: "26%", borderRadius: "4px" },
+      { id: "rear", label: "Rear Door", top: "18%", left: "18%", width: "16%", height: "24%", borderRadius: "4px" },
+      { id: "back", label: "Back Glass", top: "18%", left: "4%", width: "12%", height: "22%", borderRadius: "4px 4px 4px 15%" },
+    ],
+  },
+  {
+    id: "tesla",
+    label: "Tesla",
+    image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=900&q=80",
+    windows: [
+      { id: "windshield", label: "Windshield", top: "22%", left: "53%", width: "17%", height: "26%", borderRadius: "4px 30% 4px 4px" },
+      { id: "front", label: "Front Door", top: "24%", left: "34%", width: "17%", height: "22%", borderRadius: "4px" },
+      { id: "rear", label: "Rear Door", top: "24%", left: "16%", width: "16%", height: "20%", borderRadius: "4px" },
+      { id: "back", label: "Back Glass", top: "24%", left: "4%", width: "11%", height: "18%", borderRadius: "4px 4px 4px 20%" },
+      { id: "sunroof", label: "Glass Roof", top: "12%", left: "20%", width: "35%", height: "10%", borderRadius: "40%" },
+    ],
+  },
 ];
 
 export function TintVisualizer() {
-  const [selectedFilm, setSelectedFilm] = useState(FILM_DATA[3]); // IRX default
+  const [selectedFilm, setSelectedFilm] = useState(FILM_DATA[3]);
   const [vlt, setVlt] = useState(20);
+  const [vehicleIdx, setVehicleIdx] = useState(0);
   const [activeZones, setActiveZones] = useState<Set<string>>(
     new Set(["front", "rear", "back"])
   );
-  const [vehicleType, setVehicleType] = useState<"sedan" | "suv">("sedan");
-  const carRef = useRef<SVGSVGElement>(null);
+  const overlayRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
+  const vehicle = VEHICLES[vehicleIdx];
   const tintOpacity = 1 - vlt / 100;
   const isLegalFront = vlt >= 70;
 
@@ -52,54 +84,43 @@ export function TintVisualizer() {
     });
   }
 
-  function selectAllSides() {
-    setActiveZones(new Set(["front", "rear", "back"]));
-  }
-
-  function selectFrontsOnly() {
-    setActiveZones(new Set(["front"]));
-  }
-
-  // Animate tint change
+  // Animate tint overlays
   useEffect(() => {
-    if (!carRef.current) return;
-    const windows = carRef.current.querySelectorAll(".tint-window");
-    windows.forEach((w) => {
-      const zone = w.getAttribute("data-zone") || "";
+    overlayRefs.current.forEach((el, zone) => {
       const targetOpacity = activeZones.has(zone) ? tintOpacity : 0;
-      gsap.to(w, { opacity: targetOpacity, duration: 0.5, ease: "power2.out" });
+      gsap.to(el, { opacity: targetOpacity, duration: 0.5, ease: "power2.out" });
     });
   }, [vlt, activeZones, tintOpacity]);
 
   return (
     <div className="space-y-8">
-      {/* Vehicle Type + Presets */}
+      {/* Vehicle Type Selector */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex gap-2">
-          {(["sedan", "suv"] as const).map((type) => (
+          {VEHICLES.map((v, i) => (
             <button
-              key={type}
-              onClick={() => setVehicleType(type)}
+              key={v.id}
+              onClick={() => { setVehicleIdx(i); setActiveZones(new Set(["front", "rear", "back"])); }}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium border transition-all capitalize",
-                vehicleType === type
+                "px-4 py-2 rounded-lg text-sm font-medium border transition-all",
+                vehicleIdx === i
                   ? "border-accent bg-accent text-accent-foreground"
                   : "border-border hover:border-border-hover"
               )}
             >
-              {type === "suv" ? "SUV / Truck" : "Sedan / Coupe"}
+              {v.label}
             </button>
           ))}
         </div>
         <div className="flex gap-2">
           <button
-            onClick={selectAllSides}
+            onClick={() => setActiveZones(new Set(["front", "rear", "back"]))}
             className="px-3 py-1.5 rounded-lg text-xs font-medium border border-border hover:border-accent/50 transition-all"
           >
             All Sides + Back
           </button>
           <button
-            onClick={selectFrontsOnly}
+            onClick={() => setActiveZones(new Set(["front"]))}
             className="px-3 py-1.5 rounded-lg text-xs font-medium border border-border hover:border-accent/50 transition-all"
           >
             Fronts Only
@@ -107,92 +128,65 @@ export function TintVisualizer() {
         </div>
       </div>
 
-      {/* Main Visualizer */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Car SVG */}
-        <div className="lg:col-span-2 rounded-2xl border border-border bg-gradient-to-b from-surface to-background p-6 sm:p-10">
-          <svg
-            ref={carRef}
-            viewBox="0 0 800 400"
-            className="w-full h-auto"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {vehicleType === "sedan" ? (
-              <>
-                {/* Body */}
-                <path d="M100 280 L100 220 Q100 195 125 185 L230 145 Q265 130 310 125 L490 125 Q535 130 570 145 L675 185 Q700 195 700 220 L700 280" fill="var(--surface)" stroke="var(--border)" strokeWidth="2.5"/>
-                {/* Roof */}
-                <path d="M230 145 Q245 95 300 78 L500 78 Q555 95 570 145" fill="var(--surface)" stroke="var(--border)" strokeWidth="2.5"/>
-                {/* Windshield glass */}
-                <path d="M235 142 Q248 100 298 82 L350 80 L350 142 Z" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1.5"/>
-                {/* Windshield tint overlay */}
-                <path className="tint-window" data-zone="windshield" d="M235 142 Q248 100 298 82 L350 80 L350 142 Z" fill="black" opacity="0"/>
-                {/* Front door glass */}
-                <path d="M355 80 L355 142 L445 142 L445 80 Z" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1.5"/>
-                <path className="tint-window" data-zone="front" d="M355 80 L355 142 L445 142 L445 80 Z" fill="black" opacity="0"/>
-                {/* Rear door glass */}
-                <path d="M450 80 L450 142 L555 142 Q548 100 505 82 L450 80" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1.5"/>
-                <path className="tint-window" data-zone="rear" d="M450 80 L450 142 L555 142 Q548 100 505 82 L450 80" fill="black" opacity="0"/>
-                {/* Back glass */}
-                <path d="M558 142 Q562 120 565 105 L570 142 Z" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1"/>
-                <path className="tint-window" data-zone="back" d="M558 142 Q562 120 565 105 L570 142 Z" fill="black" opacity="0"/>
-                {/* Details */}
-                <line x1="350" y1="80" x2="350" y2="142" stroke="var(--border-hover)" strokeWidth="1"/>
-                <line x1="445" y1="80" x2="445" y2="142" stroke="var(--border-hover)" strokeWidth="1"/>
-                {/* Headlights */}
-                <ellipse cx="125" cy="215" rx="20" ry="12" fill="var(--accent)" opacity="0.3"/>
-                <ellipse cx="675" cy="215" rx="20" ry="12" fill="var(--accent)" opacity="0.15"/>
-                {/* Wheels */}
-                <circle cx="210" cy="285" r="38" fill="var(--background)" stroke="var(--border)" strokeWidth="2.5"/>
-                <circle cx="210" cy="285" r="24" fill="var(--surface)" stroke="var(--border-hover)" strokeWidth="2"/>
-                <circle cx="210" cy="285" r="8" fill="var(--border-hover)"/>
-                <circle cx="590" cy="285" r="38" fill="var(--background)" stroke="var(--border)" strokeWidth="2.5"/>
-                <circle cx="590" cy="285" r="24" fill="var(--surface)" stroke="var(--border-hover)" strokeWidth="2"/>
-                <circle cx="590" cy="285" r="8" fill="var(--border-hover)"/>
-                {/* Ground shadow */}
-                <ellipse cx="400" cy="328" rx="280" ry="8" fill="var(--border)" opacity="0.3"/>
-              </>
-            ) : (
-              <>
-                {/* SUV Body */}
-                <path d="M100 290 L100 210 Q100 185 125 175 L225 135 Q260 120 310 115 L490 115 Q540 120 575 135 L675 175 Q700 185 700 210 L700 290" fill="var(--surface)" stroke="var(--border)" strokeWidth="2.5"/>
-                {/* Roof */}
-                <path d="M225 135 Q238 75 295 58 L505 58 Q562 75 575 135" fill="var(--surface)" stroke="var(--border)" strokeWidth="2.5"/>
-                {/* Windshield */}
-                <path d="M230 132 Q242 82 292 62 L345 60 L345 132 Z" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1.5"/>
-                <path className="tint-window" data-zone="windshield" d="M230 132 Q242 82 292 62 L345 60 L345 132 Z" fill="black" opacity="0"/>
-                {/* Front */}
-                <path d="M350 60 L350 132 L440 132 L440 60 Z" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1.5"/>
-                <path className="tint-window" data-zone="front" d="M350 60 L350 132 L440 132 L440 60 Z" fill="black" opacity="0"/>
-                {/* Rear */}
-                <path d="M445 60 L445 132 L565 132 Q558 82 510 62 L445 60" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1.5"/>
-                <path className="tint-window" data-zone="rear" d="M445 60 L445 132 L565 132 Q558 82 510 62 L445 60" fill="black" opacity="0"/>
-                {/* Back */}
-                <path d="M568 132 Q572 105 575 85 L580 132 Z" fill="rgba(150,200,255,0.15)" stroke="var(--border-hover)" strokeWidth="1"/>
-                <path className="tint-window" data-zone="back" d="M568 132 Q572 105 575 85 L580 132 Z" fill="black" opacity="0"/>
-                {/* Details */}
-                <line x1="350" y1="60" x2="350" y2="132" stroke="var(--border-hover)" strokeWidth="1"/>
-                <line x1="440" y1="60" x2="440" y2="132" stroke="var(--border-hover)" strokeWidth="1"/>
-                <ellipse cx="125" cy="208" rx="22" ry="14" fill="var(--accent)" opacity="0.3"/>
-                {/* Wheels */}
-                <circle cx="210" cy="295" r="42" fill="var(--background)" stroke="var(--border)" strokeWidth="2.5"/>
-                <circle cx="210" cy="295" r="28" fill="var(--surface)" stroke="var(--border-hover)" strokeWidth="2"/>
-                <circle cx="210" cy="295" r="9" fill="var(--border-hover)"/>
-                <circle cx="590" cy="295" r="42" fill="var(--background)" stroke="var(--border)" strokeWidth="2.5"/>
-                <circle cx="590" cy="295" r="28" fill="var(--surface)" stroke="var(--border-hover)" strokeWidth="2"/>
-                <circle cx="590" cy="295" r="9" fill="var(--border-hover)"/>
-                <ellipse cx="400" cy="342" rx="280" ry="8" fill="var(--border)" opacity="0.3"/>
-              </>
-            )}
-            {/* VLT label */}
-            <text x="400" y="380" textAnchor="middle" fill="var(--foreground-muted)" fontSize="13" fontFamily="system-ui">
-              {vlt}% VLT — {VLT_OPTIONS.find((v) => v.vlt === vlt)?.desc || "Custom"}
-            </text>
-          </svg>
+      {/* Main Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Car Photo + Tint Overlays */}
+        <div className="lg:col-span-2">
+          <div className="relative rounded-2xl border border-border overflow-hidden bg-black aspect-[16/10]">
+            {/* Car Photo */}
+            <Image
+              src={vehicle.image}
+              alt={`${vehicle.label} tint preview`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 66vw"
+              priority
+            />
+
+            {/* Dark overlay for contrast */}
+            <div className="absolute inset-0 bg-black/20" />
+
+            {/* Tint overlays on each window zone */}
+            {vehicle.windows.map((win) => (
+              <div
+                key={win.id}
+                ref={(el) => { if (el) overlayRefs.current.set(win.id, el); }}
+                className="absolute cursor-pointer transition-all hover:ring-2 hover:ring-accent/50"
+                style={{
+                  top: win.top,
+                  left: win.left,
+                  width: win.width,
+                  height: win.height,
+                  borderRadius: win.borderRadius,
+                  backgroundColor: "black",
+                  opacity: activeZones.has(win.id) ? tintOpacity : 0,
+                }}
+                onClick={() => toggleZone(win.id)}
+                title={`Click to toggle ${win.label}`}
+              />
+            ))}
+
+            {/* VLT Badge */}
+            <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md rounded-lg px-3 py-2">
+              <div className="text-xs text-white/60">Current Shade</div>
+              <div className="text-2xl font-black text-accent">{vlt}% VLT</div>
+            </div>
+
+            {/* Film Badge */}
+            <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-md rounded-lg px-3 py-2">
+              <div className="text-xs text-white/60">Selected Film</div>
+              <div className="text-sm font-bold text-white">{selectedFilm.name}</div>
+            </div>
+
+            {/* Click hint */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md rounded-full px-4 py-1.5 text-[10px] text-white/70">
+              Click on windows to toggle tint
+            </div>
+          </div>
         </div>
 
-        {/* Controls Panel */}
-        <div className="space-y-6">
+        {/* Controls */}
+        <div className="space-y-5">
           {/* VLT Slider */}
           <div className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center justify-between mb-3">
@@ -227,60 +221,54 @@ export function TintVisualizer() {
                 </button>
               ))}
             </div>
-
-            {/* CA Law */}
             <div className={cn(
               "mt-4 p-3 rounded-lg text-xs",
               isLegalFront ? "bg-green-500/10 text-green-400" : "bg-yellow-500/10 text-yellow-400"
             )}>
               <strong>CA Law:</strong>{" "}
-              {isLegalFront
-                ? "Legal for front windows"
-                : "Not legal for front windows (min 70%). Legal for rear."}
+              {isLegalFront ? "Legal for front windows" : "Not legal for front (min 70%). OK for rear."}
             </div>
           </div>
 
-          {/* Zone Selection */}
+          {/* Zone Toggle */}
           <div className="rounded-xl border border-border bg-card p-5">
             <span className="text-sm font-bold block mb-3">Windows</span>
-            <div className="space-y-2">
-              {ZONES.map((zone) => (
+            <div className="space-y-1.5">
+              {vehicle.windows.map((win) => (
                 <button
-                  key={zone.id}
-                  onClick={() => toggleZone(zone.id)}
+                  key={win.id}
+                  onClick={() => toggleZone(win.id)}
                   className={cn(
-                    "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm border transition-all",
-                    activeZones.has(zone.id)
+                    "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm border transition-all",
+                    activeZones.has(win.id)
                       ? "border-accent bg-accent/10 text-foreground"
                       : "border-border text-foreground-muted hover:border-border-hover"
                   )}
                 >
-                  <span>{zone.label}</span>
-                  {activeZones.has(zone.id) && (
-                    <div className="h-2 w-2 rounded-full bg-accent" />
-                  )}
+                  <span>{win.label}</span>
+                  {activeZones.has(win.id) && <div className="h-2 w-2 rounded-full bg-accent" />}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Film Selector */}
+          {/* Film Type */}
           <div className="rounded-xl border border-border bg-card p-5">
             <span className="text-sm font-bold block mb-3">Film Type</span>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {FILM_DATA.map((film) => (
                 <button
                   key={film.id}
                   onClick={() => setSelectedFilm(film)}
                   className={cn(
-                    "w-full text-left px-3 py-2.5 rounded-lg text-sm border transition-all",
+                    "w-full text-left px-3 py-2 rounded-lg text-sm border transition-all",
                     selectedFilm.id === film.id
                       ? "border-accent bg-accent/10"
                       : "border-border hover:border-border-hover"
                   )}
                 >
                   <div className="font-medium">{film.name}</div>
-                  <div className="flex gap-3 mt-1 text-[10px] text-foreground-muted">
+                  <div className="flex gap-3 mt-0.5 text-[10px] text-foreground-muted">
                     <span>{film.uv}% UV</span>
                     <span>{film.heat}% Heat</span>
                     <span>{film.ir}% IR</span>
@@ -295,17 +283,15 @@ export function TintVisualizer() {
       {/* Performance Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { icon: Shield, label: "UV Protection", value: `${selectedFilm.uv}%`, color: "text-accent" },
-          { icon: Thermometer, label: "Heat Rejection", value: `${selectedFilm.heat}%`, color: "text-accent" },
-          { icon: Sun, label: "IR Rejection", value: `${selectedFilm.ir}%`, color: "text-accent" },
-          { icon: Eye, label: "Visible Light", value: `${vlt}%`, color: "text-foreground" },
+          { icon: Shield, label: "UV Protection", value: `${selectedFilm.uv}%` },
+          { icon: Thermometer, label: "Heat Rejection", value: `${selectedFilm.heat}%` },
+          { icon: Sun, label: "IR Rejection", value: `${selectedFilm.ir}%` },
+          { icon: Eye, label: "Visible Light", value: `${vlt}%` },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl border border-border bg-card p-4 text-center">
             <stat.icon className="h-5 w-5 mx-auto text-accent mb-2" />
-            <div className={`text-2xl font-black ${stat.color}`}>{stat.value}</div>
-            <div className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">
-              {stat.label}
-            </div>
+            <div className="text-2xl font-black text-accent">{stat.value}</div>
+            <div className="text-[10px] text-foreground-muted uppercase tracking-wider mt-1">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -313,8 +299,7 @@ export function TintVisualizer() {
       {/* CTA */}
       <div className="text-center">
         <Link href="/quote" className={buttonVariants({ size: "lg" })}>
-          Get Your Exact Quote
-          <ArrowRight className="h-4 w-4" />
+          Get Your Exact Quote <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </div>
