@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Shield } from "lucide-react";
 import { ServicePageLayout } from "@/components/shared/ServicePageLayout";
+import { LlumarViewer } from "@/components/shared/LlumarViewer";
 
 export const metadata: Metadata = {
   title: "Paint Protection Film (PPF) Orange County, CA",
@@ -71,6 +72,19 @@ export default function PaintProtectionPage() {
             "Full front, partial front, high-impact areas, or full body — we customize coverage to your needs and budget.",
         },
       ]}
-    />
+    >
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-black tracking-tight mb-4">
+            Interactive <span className="text-accent">PPF Viewer</span>
+          </h2>
+          <p className="text-foreground-secondary mb-8 max-w-2xl">
+            See how Llumar paint protection film covers your vehicle. Explore
+            different coverage options interactively.
+          </p>
+          <LlumarViewer type="auto-ppf" />
+        </div>
+      </section>
+    </ServicePageLayout>
   );
 }

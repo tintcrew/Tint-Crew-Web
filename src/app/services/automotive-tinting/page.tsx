@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Car } from "lucide-react";
 import { ServicePageLayout } from "@/components/shared/ServicePageLayout";
+import { LlumarViewer } from "@/components/shared/LlumarViewer";
 import { AUTOMOTIVE_PACKAGES } from "@/constants/services";
 
 export const metadata: Metadata = {
@@ -61,6 +62,20 @@ export default function AutomotiveTintingPage() {
             "Most automotive tint jobs are completed in 1-2 hours. Drop off in the morning, pick up the same day.",
         },
       ]}
-    />
+    >
+      {/* Llumar Interactive Tint & PPF Viewer */}
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-black tracking-tight mb-4">
+            Interactive <span className="text-accent">Film Viewer</span>
+          </h2>
+          <p className="text-foreground-secondary mb-8 max-w-2xl">
+            Explore different window tint shades and paint protection options
+            on various vehicle types with Llumar&apos;s interactive viewer.
+          </p>
+          <LlumarViewer type="auto-tint-ppf" />
+        </div>
+      </section>
+    </ServicePageLayout>
   );
 }
