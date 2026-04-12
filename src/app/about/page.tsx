@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Award, Users, Shield, Clock } from "lucide-react";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { SITE_CONFIG } from "@/constants/site";
@@ -11,6 +12,29 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="pt-20">
+      {/* Hero Image */}
+      <section className="relative h-64 sm:h-80 md:h-96 w-full">
+        <Image
+          src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=1200&q=80"
+          alt="Tint Crew workshop"
+          fill
+          className="object-cover"
+          sizes="100vw"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white">
+              About <span className="text-accent">Tint Crew</span>
+            </h1>
+            <p className="mt-4 text-lg text-white/80 max-w-xl mx-auto px-4">
+              Family-owned since 1983. Orange County&apos;s trusted name in window tinting.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>

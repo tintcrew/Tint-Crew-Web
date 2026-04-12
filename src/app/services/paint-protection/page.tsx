@@ -16,6 +16,7 @@ export default function PaintProtectionPage() {
       description="Shield your vehicle's paint from rock chips, scratches, road debris, and environmental damage with Llumar Valor PPF. Featuring self-healing Tetrashield™ technology and an invisible finish that preserves your car's original appearance."
       icon={Shield}
       heroTagline="PPF Services"
+      heroImage="https://images.unsplash.com/photo-1507136566006-cfc505b114fc?w=1200&q=80"
       ctaText="Get a PPF Quote"
       products={[
         {

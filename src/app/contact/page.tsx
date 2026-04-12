@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 import { SITE_CONFIG } from "@/constants/site";
@@ -27,7 +28,25 @@ export default function ContactPage() {
             </p>
           </AnimatedSection>
 
-          <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Storefront Image */}
+          <AnimatedSection>
+            <div className="relative mt-12 h-64 sm:h-80 w-full rounded-xl overflow-hidden">
+              <Image
+                src="https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=1200&q=80"
+                alt="Tint Crew storefront in Buena Park, CA"
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6">
+                <p className="text-white font-bold text-lg">Our Buena Park Location</p>
+                <p className="text-white/80 text-sm">{SITE_CONFIG.address.full}</p>
+              </div>
+            </div>
+          </AnimatedSection>
+
+          <div className="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Info */}
             <AnimatedSection>
               <div className="space-y-6">

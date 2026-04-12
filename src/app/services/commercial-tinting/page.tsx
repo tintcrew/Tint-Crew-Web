@@ -16,6 +16,7 @@ export default function CommercialTintingPage() {
       description="Professional window film solutions for offices, storefronts, restaurants, and commercial buildings. From solar control and energy savings to decorative branding and security — we have the right film for your business."
       icon={Building2}
       heroTagline="Commercial Solutions"
+      heroImage="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80"
       ctaText="Get a Free Consultation"
       ctaHref="/contact"
       products={[

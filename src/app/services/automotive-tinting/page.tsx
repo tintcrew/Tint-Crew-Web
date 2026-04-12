@@ -17,6 +17,7 @@ export default function AutomotiveTintingPage() {
       description="Protect your vehicle's interior, reduce heat and glare, and enhance your car's appearance with premium window films from Llumar and Rayno. All films block 99% of harmful UV rays and come with a lifetime limited warranty."
       icon={Car}
       heroTagline="Automotive Services"
+      heroImage="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=1200&q=80"
       products={AUTOMOTIVE_PACKAGES.map((pkg) => ({
         id: pkg.id,
         name: pkg.name,

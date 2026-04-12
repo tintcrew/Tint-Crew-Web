@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Phone, CheckCircle } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
@@ -23,6 +24,7 @@ interface ServicePageLayoutProps {
   description: string;
   icon: LucideIcon;
   heroTagline: string;
+  heroImage?: string;
   products: ProductSpec[];
   benefits: { title: string; description: string }[];
   ctaText?: string;
@@ -36,6 +38,7 @@ export function ServicePageLayout({
   description,
   icon: Icon,
   heroTagline,
+  heroImage,
   products,
   benefits,
   ctaText = "Get Your Free Quote",
@@ -45,8 +48,21 @@ export function ServicePageLayout({
   return (
     <div className="pt-20">
       {/* Hero */}
-      <section className="py-20 sm:py-28 bg-gradient-to-b from-surface to-background">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 sm:py-28 bg-gradient-to-b from-surface to-background overflow-hidden">
+        {heroImage && (
+          <>
+            <Image
+              src={heroImage}
+              alt=""
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+            />
+            <div className="absolute inset-0 bg-black/65" />
+          </>
+        )}
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <div className="max-w-3xl">
               <div className="flex items-center gap-3 mb-6">
@@ -57,7 +73,7 @@ export function ServicePageLayout({
                   {heroTagline}
                 </span>
               </div>
-              <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-[1.1]">
+              <h1 className={`text-4xl sm:text-5xl font-black tracking-tight leading-[1.1] ${heroImage ? "text-white" : ""}`}>
                 {title.split(accent).map((part, i, arr) =>
                   i < arr.length - 1 ? (
                     <span key={i}>
@@ -69,7 +85,7 @@ export function ServicePageLayout({
                   )
                 )}
               </h1>
-              <p className="mt-6 text-lg text-foreground-secondary leading-relaxed">
+              <p className={`mt-6 text-lg leading-relaxed ${heroImage ? "text-white/80" : "text-foreground-secondary"}`}>
                 {description}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">

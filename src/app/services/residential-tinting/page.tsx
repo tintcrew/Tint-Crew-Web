@@ -16,6 +16,7 @@ export default function ResidentialTintingPage() {
       description="Transform your home with Vista and Llumar architectural window films. Reduce heat and glare, protect your furnishings from UV damage, lower energy costs, and enhance privacy — all without changing the look of your windows."
       icon={Home}
       heroTagline="Home Window Film"
+      heroImage="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80"
       ctaText="Get a Free Consultation"
       ctaHref="/contact"
       products={[

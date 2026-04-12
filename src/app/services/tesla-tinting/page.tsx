@@ -16,6 +16,7 @@ export default function TeslaTintingPage() {
       description="Your Tesla deserves specialized care. Our ceramic window films are specifically chosen to work flawlessly with Tesla's advanced electronics, Autopilot cameras, sensors, and glass roof — without any signal interference or performance issues."
       icon={Zap}
       heroTagline="Tesla Specialists"
+      heroImage="https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=1200&q=80"
       products={[
         {
           id: "tesla-llumar-irx",
