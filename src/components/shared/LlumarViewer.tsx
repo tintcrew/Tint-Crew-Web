@@ -70,31 +70,21 @@ export function LlumarViewer({ type, height = "900px" }: LlumarViewerProps) {
         </span>
       </div>
 
-      {/* Loading state */}
-      {!loaded && (
-        <div className="flex items-center justify-center bg-surface" style={{ height }}>
-          <div className="text-center">
-            <div className="h-8 w-8 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-sm text-foreground-muted">Loading {title}...</p>
-          </div>
-        </div>
-      )}
-
-      {/* iframe */}
-      <iframe
-        src={url}
+      {/* Llumar tool — using <object> tag as specified in official docs */}
+      <object
+        data={url}
         width="100%"
         height={height}
-        style={{
-          border: "none",
-          minHeight: height,
-          display: loaded ? "block" : "none",
-        }}
+        style={{ border: "none", minHeight: height, display: "block" }}
         title={title}
-        loading="lazy"
-        allowFullScreen
-        onLoad={() => setLoaded(true)}
-      />
+      >
+        <p className="p-8 text-center text-foreground-muted">
+          Unable to load viewer.{" "}
+          <a href={url} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+            Open directly on Llumar.com
+          </a>
+        </p>
+      </object>
     </div>
   );
 }
