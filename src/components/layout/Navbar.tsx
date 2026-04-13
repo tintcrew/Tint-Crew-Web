@@ -29,10 +29,14 @@ export function Navbar() {
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl font-black tracking-tight">
-              TINT<span className="text-accent">CREW</span>
+          {/* Logo with slanted accent box (Chicago Auto Pros style) */}
+          <Link href="/" className="relative flex items-center">
+            <div
+              className="absolute -left-4 -top-3 -bottom-3 w-[calc(100%+48px)] bg-accent -z-10"
+              style={{ clipPath: "polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%)" }}
+            />
+            <span className="text-2xl font-black tracking-tight text-white px-3 py-2">
+              TINT<span className="text-white/80">CREW</span>
             </span>
           </Link>
 
